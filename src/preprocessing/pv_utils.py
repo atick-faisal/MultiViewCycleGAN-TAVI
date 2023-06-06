@@ -1,12 +1,19 @@
+import numpy as np
 import pyvista as pv
 from PIL import Image
 from typing import List, Literal
 from matplotlib.pyplot import cm
 from pyvista.core.pointset import PolyData
+from matplotlib.colors import ListedColormap
+
+jet = cm.get_cmap("jet", 64)
+cmap = jet(np.linspace(0, 1, 64))
+cmap[0, :] = [0.0, 0.0, 0.5, 0.0]
 
 
 def generate_rotating_snapshots(
-    geometry: PolyData,
+    inner_geometry: PolyData,
+    outer_geometry: PolyData,
     rotation_step: int,
     rotation_axis: Literal["x", "y", "z"],
     clim: List[float],
@@ -42,8 +49,19 @@ def generate_rotating_snapshots(
     pl.set_background("white")
 
     pl.add_mesh(
-        mesh=geometry,
+        mesh=inner_geometry,
         cmap=cm.jet,
+        show_scalar_bar=False,
+        clim=clim,
+        ambient=ambient,
+        smooth_shading=True,
+        lighting=True,
+        opacity=0.1
+    )
+
+    pl.add_mesh(
+        mesh=outer_geometry,
+        cmap=ListedColormap(cmap),
         show_scalar_bar=False,
         clim=clim,
         ambient=ambient,
@@ -53,11 +71,14 @@ def generate_rotating_snapshots(
 
     for i in range(360 // rotation_step):
         if rotation_axis == "x":
-            geometry.rotate_x(rotation_step, inplace=True)
+            inner_geometry.rotate_x(rotation_step, inplace=True)
+            outer_geometry.rotate_x(rotation_step, inplace=True)
         elif rotation_axis == "y":
-            geometry.rotate_y(rotation_step, inplace=True)
+            inner_geometry.rotate_y(rotation_step, inplace=True)
+            outer_geometry.rotate_y(rotation_step, inplace=True)
         elif rotation_axis == "z":
-            geometry.rotate_z(rotation_step, inplace=True)
+            inner_geometry.rotate_z(rotation_step, inplace=True)
+            outer_geometry.rotate_z(rotation_step, inplace=True)
         else:
             raise ValueError("Roatation axis is not correct")
 

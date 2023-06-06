@@ -16,26 +16,15 @@ current_dir = os.path.dirname(current_file)
 
 DATA_DIR = os.path.join(current_dir, "../../data/dataset")
 GEOMETRY_DIR = "Geometry"
-CFD_DIR = "CFD"
+RESULTS_DIR = "Results"
 IMAGES_DIR = "Images"
 TRAIN_DIR = "Train"
 TEST_DIR = "Test"
 
-GEOMETRY_TRANSFORMATIONS = [
-    "Raw",
-    "Curvature",
-    "TAWSS",
-    "ECAP",
-    "OSI",
-    "RRT"
-]
+GEOMETRY_TRANSFORMATIONS = ["Raw", "Pressure"]
 
 RAW_DIR = "Raw/"
-CURVATURE_DIR = "Curvature/"
-TAWSS_DIR = "TAWSS/"
-ECAP_DIR = "ECAP/"
-OSI_DIR = "OSI/"
-RRT_DIR = "RRT/"
+PRESSURE_DIR = "Pressure/"
 
 TRAIN_PERCENTAGE = 0.9
 ROTATION_STEP = 30
@@ -58,10 +47,12 @@ def get_train_test_geometries(
 
     all_geometries = os.listdir(geometry_files_dir)
     all_geometries = [filename[:-4] for filename in all_geometries]
-    all_geometries = all_geometries[150:]
+    # all_geometries = all_geometries[150:]
+
+    print(all_geometries)
 
     random.shuffle(all_geometries)
-    train_size = int(len(all_geometries) * train_percentage)
+    train_size = round(len(all_geometries) * train_percentage)
     train_geometries, test_geometries = \
         all_geometries[:train_size], all_geometries[train_size:]
 
@@ -97,16 +88,8 @@ def get_clim(transformation) -> List[float]:
         List[float]: The clim values for the given transformation.
     """
 
-    if transformation == "Curvature":
-        return [0.0, 150.0]
-    elif transformation == "TAWSS":
-        return [-3.0, 3.0]
-    elif transformation == "ECAP":
-        return [0.0, 2.0]
-    elif transformation == "OSI":
-        return [0.0, 0.5]
-    elif transformation == "RRT":
-        return [0.0, 10]
+    if transformation == "Pressure":
+        return [0.0, 0.1]
     else:
         return [0.0, 0.0]
 
@@ -146,22 +129,18 @@ def generate_images_from_geometries(
     """
 
     for filename in geometries:
-        geometry_path = os.path.join(DATA_DIR, GEOMETRY_DIR, filename + ".stl")
-        cfd_result_path = os.path.join(DATA_DIR, CFD_DIR, filename + ".csv")
-        geometry = pv.read(geometry_path)
+        inner_geometry_path = os.path.join(DATA_DIR, GEOMETRY_DIR, filename + ".obj")
+        outer_geometry_path = os.path.join(DATA_DIR, GEOMETRY_DIR, filename + ".vtk")
+        result_path = os.path.join(DATA_DIR, PRESSURE_DIR, filename + ".csv")
 
-        cfd_results = pd.read_csv(cfd_result_path)
+        inner_geometry = pv.read(inner_geometry_path)
+        outer_geometry = pv.read(outer_geometry_path)
+
+        cfd_results = pd.read_csv(result_path)
         if transformation == "Raw":
             pass
-        elif transformation == "Curvature":
-            curvature = geometry.curvature()
-            curvature[curvature < 0.001] = 0.001
-            geometry.point_data[transformation] = curvature
-        elif transformation == "TAWSS":
-            geometry.point_data[transformation] = np.log2(cfd_results.filter(
-                regex=f".*{transformation}.*"))
         else:
-            geometry.point_data[transformation] = cfd_results.filter(
+            outer_geometry.point_data[transformation] = cfd_results.filter(
                 regex=f".*{transformation}.*")
 
         save_path = None
@@ -176,7 +155,8 @@ def generate_images_from_geometries(
 
         if mode == "train":
             generate_rotating_snapshots(
-                geometry=geometry,
+                inner_geometry=inner_geometry,
+                outer_geometry=outer_geometry,
                 rotation_step=ROTATION_STEP,
                 rotation_axis="x",
                 clim=get_clim(transformation),
@@ -184,7 +164,8 @@ def generate_images_from_geometries(
                 save_path=save_path
             )
             generate_rotating_snapshots(
-                geometry=geometry,
+                inner_geometry=inner_geometry,
+                outer_geometry=outer_geometry,
                 rotation_step=ROTATION_STEP,
                 rotation_axis="y",
                 clim=get_clim(transformation),
@@ -193,7 +174,8 @@ def generate_images_from_geometries(
             )
 
         generate_rotating_snapshots(
-            geometry=geometry,
+            inner_geometry=inner_geometry,
+            outer_geometry=outer_geometry,
             rotation_step=ROTATION_STEP,
             rotation_axis="z",
             clim=get_clim(transformation),
@@ -207,20 +189,21 @@ def generate_images_from_geometries(
 def clean_dir(path: str):
     try:
         shutil.rmtree(path=path)
-        os.mkdir(path)
     except OSError:
-        pass
+        os.makedirs(path)
 
 
 if __name__ == "__main__":
     train_geometries, test_geometries = get_train_test_geometries(
-        geometry_files_dir=os.path.join(DATA_DIR, GEOMETRY_DIR),
+        geometry_files_dir=os.path.join(DATA_DIR, PRESSURE_DIR),
         train_percentage=TRAIN_PERCENTAGE
     )
 
+    print(train_geometries)
+
     for transformation in GEOMETRY_TRANSFORMATIONS:
-        # clean_dir(os.path.join(DATA_DIR, IMAGES_DIR, TRAIN_DIR, transformation))
-        # clean_dir(os.path.join(DATA_DIR, IMAGES_DIR, TEST_DIR, transformation))
+        clean_dir(os.path.join(DATA_DIR, IMAGES_DIR, TRAIN_DIR, transformation))
+        clean_dir(os.path.join(DATA_DIR, IMAGES_DIR, TEST_DIR, transformation))
 
         train_generator = generate_images_from_geometries(
             geometries=train_geometries,
