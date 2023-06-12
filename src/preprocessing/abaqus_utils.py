@@ -44,3 +44,4 @@ def get_ordered_result(
     result = pd.read_csv(result_path, skipinitialspace=True)
     clean_result = get_nodes_and_pressure(result)
     return points.merge(clean_result, on="Node", how="outer").fillna(0)
+    # return clean_result
