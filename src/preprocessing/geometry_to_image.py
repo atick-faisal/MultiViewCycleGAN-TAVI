@@ -7,7 +7,7 @@ from typing import List, Tuple, Literal
 
 from utils import *
 
-random.seed(42)
+random.seed(7000)
 
 current_file = os.path.abspath(__file__)
 current_dir = os.path.dirname(current_file)
@@ -22,7 +22,7 @@ RAW_DIR = "Raw"
 CURVATURE_DIR = "Curvature"
 PRESSURE_DIR = "Pressure"
 TRAIN_PERCENTAGE = 0.9
-GEOMETRY_TRANSFORMATIONS = ["Curvature"]
+GEOMETRY_TRANSFORMATIONS = ["Curvature", "Pressure"]
 PRESSURE_LIM = [0.0, 0.4]
 CURVATURE_LIM = [0.0, 0.05]
 
