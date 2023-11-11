@@ -30,7 +30,7 @@ def generate_rotating_snapshots(
     - None
 
     """
-    pl = pv.Plotter(off_screen=True)
+    pl = pv.Plotter(off_screen=False)
     pl.enable_anti_aliasing()
     pl.set_background("white")
 
@@ -56,6 +56,8 @@ def generate_rotating_snapshots(
     pl.camera.focal_point = (0, 0, 20.0)
     pl.camera.elevation = -20
 
+    geometry.rotate_z(130, inplace=True)
+
     for i in range(360 // rotation_step):
         if rotation_axis == "x":
             geometry.rotate_x(rotation_step, inplace=True)
@@ -80,5 +82,5 @@ def generate_rotating_snapshots(
         image = Image.fromarray(pl.image[:, 128:-128, :])
         image.save(save_path + "_{:s}_{:03d}.png".format(rotation_axis, i))
 
-    pl.close()
-    pl.deep_clean()
+    pl.show()
+    # pl.deep_clean()

@@ -22,7 +22,7 @@ RAW_DIR = "Raw"
 CURVATURE_DIR = "Curvature"
 PRESSURE_DIR = "Pressure"
 TRAIN_PERCENTAGE = 0.9
-GEOMETRY_TRANSFORMATIONS = ["Curvature", "Pressure"]
+GEOMETRY_TRANSFORMATIONS = ["Curvature"]
 PRESSURE_LIM = [0.0, 0.4]
 CURVATURE_LIM = [0.0, 0.05]
 
@@ -98,6 +98,9 @@ if __name__ == "__main__":
         for _ in tqdm(range(len(train_patients))):
             next(train_generator)
 
-        test_generator = generate_images(train_patients, transformation, "test")
-        for _ in tqdm(range(len(test_patients))):
-            next(test_generator)
+            break
+        break
+
+        # test_generator = generate_images(train_patients, transformation, "test")
+        # for _ in tqdm(range(len(test_patients))):
+        #     next(test_generator)
