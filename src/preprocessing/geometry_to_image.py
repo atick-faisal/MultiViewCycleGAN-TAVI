@@ -21,8 +21,8 @@ TEST_DIR = "Test"
 RAW_DIR = "Raw"
 CURVATURE_DIR = "Curvature"
 PRESSURE_DIR = "Pressure"
-TRAIN_PERCENTAGE = 0.9
-GEOMETRY_TRANSFORMATIONS = ["Curvature", "Pressure"]
+TRAIN_PERCENTAGE = 0.8
+GEOMETRY_TRANSFORMATIONS = ["Pressure"]
 PRESSURE_LIM = [0.0, 0.4]
 CURVATURE_LIM = [0.0, 0.05]
 
@@ -47,7 +47,7 @@ def generate_images(
             files_path = os.path.join(patient_path, size)
             input_file = get_file_with_extension(files_path, ".inp")
             result_file = get_file_with_extension(files_path, ".csv")
-            aorta_file = get_file_with_extension(files_path, "AORTA.inp.stl")
+            aorta_file = get_file_with_extension(files_path, "AORTA.inp.vtk")
             stent_file = get_file_with_extension(files_path, "STENT.obj")
 
             aorta = pv.read(aorta_file)
@@ -56,16 +56,21 @@ def generate_images(
             point_data = None
 
             if transformation == "Curvature":
-                aorta = aorta + stent
-                point_data = aorta.curvature(curv_type="gaussian")
+                point_data = np.concatenate([aorta.curvature(curv_type="gaussian"), np.zeros((stent.n_points))])
+                aorta = stent + aorta
+
+                # point_data = aorta.curvature(curv_type="gaussian")
 
             elif transformation == "Pressure":
                 result = get_simulation_result(input_file, result_file)
-                point_data = result["Pressure"].to_numpy()
+                point_data = np.concatenate([result["Pressure"].to_numpy(), np.zeros((stent.n_points))])
+                aorta = stent + aorta
+                # point_data = result["Pressure"].to_numpy()
 
             try:
                 aorta.point_data[transformation] = point_data
-            except:
+            except Exception as e:
+                print(e)
                 print(aorta_file)
 
             save_path = None
@@ -98,6 +103,6 @@ if __name__ == "__main__":
         for _ in tqdm(range(len(train_patients))):
             next(train_generator)
 
-        test_generator = generate_images(train_patients, transformation, "test")
+        test_generator = generate_images(test_patients, transformation, "test")
         for _ in tqdm(range(len(test_patients))):
             next(test_generator)

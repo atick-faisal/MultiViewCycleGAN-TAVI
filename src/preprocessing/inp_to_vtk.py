@@ -27,8 +27,8 @@ def convert_inp_to_vtk(inp_file_path: str) -> None:
     mesh = meshio.read(inp_file_path)
 
     # Write the mesh to VTK format
-    # mesh.write(inp_file_path + ".vtk")
-    mesh.write(inp_file_path + ".stl")
+    mesh.write(inp_file_path + ".vtk")
+    # mesh.write(inp_file_path + ".stl")
 
 
 def convert_all_inp_files_to_vtk() -> None:

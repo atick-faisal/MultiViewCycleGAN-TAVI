@@ -37,9 +37,9 @@ def generate_rotating_snapshots(
     # Required for correcting the geometry orientation
     geometry.rotate_x(90, inplace=True)
 
-    jet = cm.get_cmap("jet", 64)
-    cmap = jet(np.linspace(0, 1, 64))
-    # cmap[0, 3] = 0.7
+    jet = cm.get_cmap("jet", 16)
+    cmap = jet(np.linspace(0, 1, 16))
+    # cmap[0, 3] = 0.3
 
     pl.add_mesh(
         mesh=geometry,
@@ -55,6 +55,8 @@ def generate_rotating_snapshots(
     pl.camera.zoom(2.0)
     pl.camera.focal_point = (0, 0, 20.0)
     pl.camera.elevation = -20
+
+    # geometry.rotate_z(130, inplace=True)
 
     for i in range(360 // rotation_step):
         if rotation_axis == "x":
@@ -75,10 +77,12 @@ def generate_rotating_snapshots(
             ambient=ambient,
             smooth_shading=True,
             lighting=True,
+            opacity=1.0
         )
         pl.show(auto_close=False)
         image = Image.fromarray(pl.image[:, 128:-128, :])
         image.save(save_path + "_{:s}_{:03d}.png".format(rotation_axis, i))
 
+    # pl.show()
     pl.close()
     pl.deep_clean()
