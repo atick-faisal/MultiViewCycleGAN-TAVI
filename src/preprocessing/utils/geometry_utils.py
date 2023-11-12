@@ -39,7 +39,7 @@ def generate_rotating_snapshots(
 
     jet = cm.get_cmap("jet", 16)
     cmap = jet(np.linspace(0, 1, 16))
-    cmap[0, 3] = 0.3
+    # cmap[0, 3] = 0.3
 
     pl.add_mesh(
         mesh=geometry,

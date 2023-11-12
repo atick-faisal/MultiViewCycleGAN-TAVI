@@ -22,7 +22,7 @@ RAW_DIR = "Raw"
 CURVATURE_DIR = "Curvature"
 PRESSURE_DIR = "Pressure"
 TRAIN_PERCENTAGE = 0.8
-GEOMETRY_TRANSFORMATIONS = ["Curvature"]
+GEOMETRY_TRANSFORMATIONS = ["Pressure"]
 PRESSURE_LIM = [0.0, 0.4]
 CURVATURE_LIM = [0.0, 0.05]
 
@@ -47,7 +47,7 @@ def generate_images(
             files_path = os.path.join(patient_path, size)
             input_file = get_file_with_extension(files_path, ".inp")
             result_file = get_file_with_extension(files_path, ".csv")
-            aorta_file = get_file_with_extension(files_path, "AORTA.inp.stl")
+            aorta_file = get_file_with_extension(files_path, "AORTA.inp.vtk")
             stent_file = get_file_with_extension(files_path, "STENT.obj")
 
             aorta = pv.read(aorta_file)
