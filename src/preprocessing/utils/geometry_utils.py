@@ -37,9 +37,9 @@ def generate_rotating_snapshots(
     # Required for correcting the geometry orientation
     geometry.rotate_x(90, inplace=True)
 
-    jet = cm.get_cmap("jet", 64)
-    cmap = jet(np.linspace(0, 1, 64))
-    # cmap[0, 3] = 0.7
+    jet = cm.get_cmap("jet", 16)
+    cmap = jet(np.linspace(0, 1, 16))
+    cmap[0, 3] = 0.3
 
     pl.add_mesh(
         mesh=geometry,
@@ -52,7 +52,7 @@ def generate_rotating_snapshots(
     )
 
     # This configuration works best to get a good snapshot
-    pl.camera.zoom(1.0)
+    pl.camera.zoom(2.0)
     pl.camera.focal_point = (0, 0, 20.0)
     pl.camera.elevation = -20
 
