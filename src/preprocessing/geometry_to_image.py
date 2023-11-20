@@ -21,9 +21,11 @@ TEST_DIR = "Test"
 RAW_DIR = "Raw"
 CURVATURE_DIR = "Curvature"
 PRESSURE_DIR = "Pressure"
+STRESS_DIR = "Stress"
 TRAIN_PERCENTAGE = 0.8
-GEOMETRY_TRANSFORMATIONS = ["Pressure"]
+GEOMETRY_TRANSFORMATIONS = ["Stress"]
 PRESSURE_LIM = [0.0, 0.4]
+STRESS_LIM = [0.0, 0.5]
 CURVATURE_LIM = [0.0, 0.05]
 
 
@@ -46,7 +48,8 @@ def generate_images(
         for size in sizes:
             files_path = os.path.join(patient_path, size)
             input_file = get_file_with_extension(files_path, ".inp")
-            result_file = get_file_with_extension(files_path, ".csv")
+            pressure_file = get_file_with_extension(files_path, "CONTACT.csv")
+            stress_file = get_file_with_extension(files_path, "SPOS.csv")
             aorta_file = get_file_with_extension(files_path, "AORTA.inp.vtk")
             stent_file = get_file_with_extension(files_path, "STENT.obj")
 
@@ -62,10 +65,15 @@ def generate_images(
                 # point_data = aorta.curvature(curv_type="gaussian")
 
             elif transformation == "Pressure":
-                result = get_simulation_result(input_file, result_file)
-                point_data = np.concatenate([result["Pressure"].to_numpy(), np.zeros((stent.n_points))])
+                result = get_pressure_result(input_file, pressure_file)
+                point_data = np.concatenate([result["Value"].to_numpy(), np.zeros((stent.n_points))])
                 aorta = stent + aorta
                 # point_data = result["Pressure"].to_numpy()
+
+            elif transformation == "Stress":
+                result = get_stress_result(input_file, stress_file)
+                point_data = np.concatenate([result["Value"].to_numpy(), np.zeros((stent.n_points))])
+                aorta = stent + aorta
 
             try:
                 aorta.point_data[transformation] = point_data
@@ -84,7 +92,13 @@ def generate_images(
                     DATA_DIR, IMAGES_DIR, TEST_DIR, transformation, filename
                 )
 
-            clim = PRESSURE_LIM if transformation == "Pressure" else CURVATURE_LIM
+            clim = None
+            if transformation == "Pressure":
+                clim = PRESSURE_LIM
+            elif transformation == "Stress":
+                clim = STRESS_LIM
+            else:
+                clim = CURVATURE_LIM
             generate_rotating_snapshots(aorta, save_path, clim)
 
         yield

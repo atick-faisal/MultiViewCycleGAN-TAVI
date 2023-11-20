@@ -35,7 +35,7 @@ def _get_point_cloud_from_inp_file(inp_file_path: str) -> pd.DataFrame:
     return pd.read_csv(StringIO("\n".join(node_lines)), names=["Node", "X", "Y", "Z"])
 
 
-def _get_nodes_and_pressure(df: pd.DataFrame) -> pd.DataFrame:
+def _get_clean_result(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
     """
     Extracts the nodes and corresponding pressure values from a DataFrame.
 
@@ -47,15 +47,15 @@ def _get_nodes_and_pressure(df: pd.DataFrame) -> pd.DataFrame:
     """
     # Convert the 'Node Label' and 'CPRESS     General_Contact_Domain' columns to numeric
     df["Node"] = pd.to_numeric(df["Node Label"], errors="coerce")
-    df["Pressure"] = pd.to_numeric(
-        df["CPRESS     General_Contact_Domain"], errors="coerce"
+    df["Value"] = pd.to_numeric(
+        df[column_name], errors="coerce"
     )
 
     # Select only the 'Node' and 'Pressure' columns
-    return df[["Node", "Pressure"]]
+    return df[["Node", "Value"]]
 
 
-def get_simulation_result(inp_file_path: str, result_path: str) -> pd.DataFrame:
+def get_pressure_result(inp_file_path: str, pressure_path: str) -> pd.DataFrame:
     """
     Reads an input file and a result file, and merges the extracted point cloud data with the result data.
 
@@ -70,10 +70,36 @@ def get_simulation_result(inp_file_path: str, result_path: str) -> pd.DataFrame:
     points = _get_point_cloud_from_inp_file(inp_file_path)
 
     # Read the result data from the result file
-    result = pd.read_csv(result_path, skipinitialspace=True)
+    result = pd.read_csv(pressure_path, skipinitialspace=True)
 
     # Extract the nodes and pressure data from the result DataFrame
-    clean_result = _get_nodes_and_pressure(result)
+    clean_result = _get_clean_result(result, "CPRESS     General_Contact_Domain")
+
+    # Merge the point cloud data with the result data based on the 'Node' column
+    merged_data = points.merge(clean_result, on="Node", how="outer").fillna(0)
+
+    return merged_data
+
+
+def get_stress_result(inp_file_path: str, stress_path: str) -> pd.DataFrame:
+    """
+    Reads an input file and a result file, and merges the extracted point cloud data with the result data.
+
+    Parameters:
+        inp_file_path (str): The file path of the input file in 'inp' format.
+        result_path (str): The file path of the result file.
+
+    Returns:
+        pd.DataFrame: A DataFrame containing the merged data with columns ['Node', 'X', 'Y', 'Z', 'Pressure'].
+    """
+    # Extract the point cloud data from the input file
+    points = _get_point_cloud_from_inp_file(inp_file_path)
+
+    # Read the result data from the result file
+    result = pd.read_csv(stress_path, skipinitialspace=True)
+
+    # Extract the nodes and pressure data from the result DataFrame
+    clean_result = _get_clean_result(result, "S-Mises")
 
     # Merge the point cloud data with the result data based on the 'Node' column
     merged_data = points.merge(clean_result, on="Node", how="outer").fillna(0)
