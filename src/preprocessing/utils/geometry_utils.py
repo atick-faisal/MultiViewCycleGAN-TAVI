@@ -41,10 +41,10 @@ def generate_rotating_snapshots(
     cmap = jet(np.linspace(0, 1, 16))
 
     # ... Stress
-    cmap[0:5, 3] = 0.3
+    # cmap[0:5, 3] = 0.3
 
     # ... Pressure & Curvature
-    # cmap[0, 3] = 0.3
+    cmap[0, 3] = 0.3
 
     pl.add_mesh(
         mesh=geometry,

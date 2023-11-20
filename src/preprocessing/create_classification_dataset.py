@@ -12,7 +12,7 @@ TRAIN_DIR = "Train"
 TEST_DIR = "Test"
 GOOD_DIR = "Good"
 BAD_DIR = "BAD"
-PRESSURE_DIR = "Pressure"
+TARGET_DIR = "Stress"
 
 GOOD_CASES = [
     "PATIENT-1_26",
@@ -29,9 +29,12 @@ GOOD_CASES = [
     "PATIENT-13_26",
     "PATIENT-14_29",
     "PATIENT-15_29",
+    "PATIENT-16_29",
+    "PATIENT-17_26",
+    "PATIENT-19_29",
 ]
 
-test_path = os.path.join(DATA_DIR, IMAGES_DIR, TEST_DIR, PRESSURE_DIR)
+test_path = os.path.join(DATA_DIR, IMAGES_DIR, TEST_DIR, TARGET_DIR)
 test_images = os.listdir(test_path)
 good_cases = [
     item for item in test_images if any(good_case in item for good_case in GOOD_CASES)
@@ -55,7 +58,7 @@ for case in bad_cases:
     shutil.copy(source_path, dest_path)
 
     
-train_path = os.path.join(DATA_DIR, IMAGES_DIR, TRAIN_DIR, PRESSURE_DIR)
+train_path = os.path.join(DATA_DIR, IMAGES_DIR, TRAIN_DIR, TARGET_DIR)
 train_images = os.listdir(train_path)
 good_cases = [
     item for item in train_images if any(good_case in item for good_case in GOOD_CASES)
