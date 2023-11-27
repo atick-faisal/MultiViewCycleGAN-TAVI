@@ -38,7 +38,7 @@ def calculate_metrics(image_folder):
     return avg_mse, avg_rmse, 0
 
 # Usage
-image_folder = '/home/ai/Downloads/cyclegan_256/'
+image_folder = '/home/ai/Downloads/CG_Nov-27-11_59AM-20231127T130336Z-001/CG_Nov-27-11_59AM/'
 avg_mse, avg_rmse, avg_ssim = calculate_metrics(image_folder)
 print(f"Average MSE: {avg_mse}, Average RMSE: {avg_rmse}, Average SSIM: {avg_ssim}")
 
@@ -56,4 +56,4 @@ print(f"Average MSE: {avg_mse}, Average RMSE: {avg_rmse}, Average SSIM: {avg_ssi
 # UNet
 # Average MSE: 13.77025690532866, Average RMSE: 3.6943809085779313, Average SSIM: 0.9308193108223433
 # Average MSE: 12.31149028596424, Average RMSE: 3.492069471009254
-
+# Average MSE: 12.18688503901164, Average RMSE: 3.471797798906307
