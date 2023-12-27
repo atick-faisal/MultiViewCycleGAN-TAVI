@@ -37,14 +37,14 @@ def generate_rotating_snapshots(
     # Required for correcting the geometry orientation
     geometry.rotate_x(90, inplace=True)
 
-    jet = cm.get_cmap("jet", 16)
-    cmap = jet(np.linspace(0, 1, 16))
+    jet = cm.get_cmap("jet", 64)
+    cmap = jet(np.linspace(0, 1, 64))
 
     # ... Stress
     # cmap[0:5, 3] = 0.3
 
     # ... Pressure & Curvature
-    cmap[0, 3] = 0.3
+    # cmap[0, 3] = 0.3
 
     pl.add_mesh(
         mesh=geometry,
