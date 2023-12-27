@@ -12,7 +12,8 @@ random.seed(1)
 current_file = os.path.abspath(__file__)
 current_dir = os.path.dirname(current_file)
 
-DATA_DIR = os.path.join(current_dir, "../../data/dataset")
+# DATA_DIR = os.path.join(current_dir, "../../data/dataset")
+DATA_DIR = "/mnt/Andromeda/Datasets/TAVI/"
 PATIENTS_DIR = "Patients"
 IMAGES_DIR = "Images"
 TRAIN_DIR = "Train"
@@ -23,7 +24,7 @@ CURVATURE_DIR = "Curvature"
 PRESSURE_DIR = "Pressure"
 STRESS_DIR = "Stress"
 TRAIN_PERCENTAGE = 0.8
-GEOMETRY_TRANSFORMATIONS = ["Curvature"]
+GEOMETRY_TRANSFORMATIONS = ["Stress"]
 PRESSURE_LIM = [0.0, 0.4]
 STRESS_LIM = [0.0, 0.5]
 CURVATURE_LIM = [0.0, 0.05]
@@ -50,7 +51,7 @@ def generate_images(
             input_file = get_file_with_extension(files_path, ".inp")
             pressure_file = get_file_with_extension(files_path, "CONTACT.csv")
             stress_file = get_file_with_extension(files_path, "SPOS.csv")
-            aorta_file = get_file_with_extension(files_path, "AORTA.inp.stl")
+            aorta_file = get_file_with_extension(files_path, "AORTA.inp.vtk")
             stent_file = get_file_with_extension(files_path, "STENT.obj")
 
             aorta = pv.read(aorta_file)
@@ -116,6 +117,9 @@ if __name__ == "__main__":
         train_generator = generate_images(train_patients, transformation, "train")
         for _ in tqdm(range(len(train_patients))):
             next(train_generator)
+
+        #     break
+        # break
 
         test_generator = generate_images(test_patients, transformation, "test")
         for _ in tqdm(range(len(test_patients))):
