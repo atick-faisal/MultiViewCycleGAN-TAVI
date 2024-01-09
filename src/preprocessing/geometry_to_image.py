@@ -24,7 +24,7 @@ CURVATURE_DIR = "Curvature"
 PRESSURE_DIR = "Pressure"
 STRESS_DIR = "Stress"
 TRAIN_PERCENTAGE = 0.8
-GEOMETRY_TRANSFORMATIONS = ["Stress"]
+GEOMETRY_TRANSFORMATIONS = ["Curvature"]
 PRESSURE_LIM = [0.0, 0.4]
 STRESS_LIM = [0.0, 0.5]
 CURVATURE_LIM = [0.0, 0.05]
@@ -51,7 +51,7 @@ def generate_images(
             input_file = get_file_with_extension(files_path, ".inp")
             pressure_file = get_file_with_extension(files_path, "CONTACT.csv")
             stress_file = get_file_with_extension(files_path, "SPOS.csv")
-            aorta_file = get_file_with_extension(files_path, "AORTA.inp.vtk")
+            aorta_file = get_file_with_extension(files_path, "AORTA.inp.stl")
             stent_file = get_file_with_extension(files_path, "STENT.obj")
 
             aorta = pv.read(aorta_file)
