@@ -5,8 +5,8 @@ from utils import clean_dir
 current_file = os.path.abspath(__file__)
 current_dir = os.path.dirname(current_file)
 
-DATA_DIR = os.path.join(current_dir, "../../data/dataset")
-CLASS_DIR = "Classification"
+DATA_DIR = "/mnt/Andromeda/Datasets/TAVI/"
+CLASS_DIR = "Classification2"
 IMAGES_DIR = "Images"
 TRAIN_DIR = "Train"
 TEST_DIR = "Test"
@@ -42,9 +42,9 @@ good_cases = [
 dest_dir = os.path.join(DATA_DIR, CLASS_DIR, TEST_DIR, GOOD_DIR)
 clean_dir(dest_dir)
 
-for case in good_cases:
+for i, case in enumerate(good_cases):
     source_path = os.path.join(test_path, case)
-    dest_path = os.path.join(dest_dir, case)
+    dest_path = os.path.join(dest_dir, f"{i:04}.png")
     shutil.copy(source_path, dest_path)
 
 bad_cases = [item for item in test_images if item not in good_cases]
@@ -52,9 +52,9 @@ bad_cases = [item for item in test_images if item not in good_cases]
 dest_dir = os.path.join(DATA_DIR, CLASS_DIR, TEST_DIR, BAD_DIR)
 clean_dir(dest_dir)
 
-for case in bad_cases:
+for i, case in enumerate(bad_cases):
     source_path = os.path.join(test_path, case)
-    dest_path = os.path.join(dest_dir, case)
+    dest_path = os.path.join(dest_dir, f"{i:04}.png")
     shutil.copy(source_path, dest_path)
 
     
@@ -66,9 +66,9 @@ good_cases = [
 dest_dir = os.path.join(DATA_DIR, CLASS_DIR, TRAIN_DIR, GOOD_DIR)
 clean_dir(dest_dir)
 
-for case in good_cases:
+for i, case in enumerate(good_cases):
     source_path = os.path.join(train_path, case)
-    dest_path = os.path.join(dest_dir, case)
+    dest_path = os.path.join(dest_dir, f"{i:04}.png")
     shutil.copy(source_path, dest_path)
 
 bad_cases = [item for item in train_images if item not in good_cases]
@@ -76,7 +76,7 @@ bad_cases = [item for item in train_images if item not in good_cases]
 dest_dir = os.path.join(DATA_DIR, CLASS_DIR, TRAIN_DIR, BAD_DIR)
 clean_dir(dest_dir)
 
-for case in bad_cases:
+for i, case in enumerate(bad_cases):
     source_path = os.path.join(train_path, case)
-    dest_path = os.path.join(dest_dir, case)
+    dest_path = os.path.join(dest_dir, f"{i:04}.png")
     shutil.copy(source_path, dest_path)
