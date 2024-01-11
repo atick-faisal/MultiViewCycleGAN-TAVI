@@ -6,7 +6,7 @@ from utils import *
 
 DATA_DIR = "/mnt/Andromeda/Datasets/TAVI/"
 IMAGES_DIR = "Images"
-PAIRED_DIR = "Paired-Images-Stress"
+PAIRED_DIR = "Paired-Images-Pressure"
 TRAIN_DIR = "Train"
 TEST_DIR = "Test"
 CURVATURE_DIR = "Curvature"
@@ -46,7 +46,7 @@ if __name__ == "__main__":
         stress_image_path = os.path.join(train_stress_dir, image)
 
         save_path = os.path.join(train_pairs_dir, image)
-        create_pair(image_path, stress_image_path, save_path)
+        create_pair(image_path, pressure_image_path, save_path)
         # create_pair(save_path, stress_image_path, save_path)
 
     # Process test images
@@ -65,5 +65,5 @@ if __name__ == "__main__":
         stress_image_path = os.path.join(test_stress_dir, image)
 
         save_path = os.path.join(test_pairs_dir, image)
-        create_pair(image_path, stress_image_path, save_path)
+        create_pair(image_path, pressure_image_path, save_path)
         # create_pair(save_path, stress_image_path, save_path)
