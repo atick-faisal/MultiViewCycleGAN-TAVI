@@ -82,7 +82,9 @@ def generate_rotating_snapshots(
             ambient=ambient,
             smooth_shading=True,
             lighting=True,
-            opacity=1.0
+            opacity=1.0,
+            show_edges=True,
+            # color="white"
         )
         pl.show(auto_close=False)
         image = Image.fromarray(pl.image[:, 128:-128, :])

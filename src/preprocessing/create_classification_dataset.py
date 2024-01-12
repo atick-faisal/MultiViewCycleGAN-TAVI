@@ -6,7 +6,7 @@ current_file = os.path.abspath(__file__)
 current_dir = os.path.dirname(current_file)
 
 DATA_DIR = "/mnt/Andromeda/Datasets/TAVI/"
-CLASS_DIR = "Classification2"
+CLASS_DIR = "Classification6"
 IMAGES_DIR = "Images"
 TRAIN_DIR = "Train"
 TEST_DIR = "Test"
@@ -44,7 +44,7 @@ clean_dir(dest_dir)
 
 for i, case in enumerate(good_cases):
     source_path = os.path.join(test_path, case)
-    dest_path = os.path.join(dest_dir, f"{i:04}.png")
+    dest_path = os.path.join(dest_dir, f"{i//12:03}_{abs(i + 12)%12:03}.png")
     shutil.copy(source_path, dest_path)
 
 bad_cases = [item for item in test_images if item not in good_cases]
@@ -54,7 +54,7 @@ clean_dir(dest_dir)
 
 for i, case in enumerate(bad_cases):
     source_path = os.path.join(test_path, case)
-    dest_path = os.path.join(dest_dir, f"{i:04}.png")
+    dest_path = os.path.join(dest_dir, f"{i//12:03}_{abs(i + 12)%12:03}.png")
     shutil.copy(source_path, dest_path)
 
     
@@ -68,7 +68,7 @@ clean_dir(dest_dir)
 
 for i, case in enumerate(good_cases):
     source_path = os.path.join(train_path, case)
-    dest_path = os.path.join(dest_dir, f"{i:04}.png")
+    dest_path = os.path.join(dest_dir, f"{i//12:03}_{abs(i + 12)%12:03}.png")
     shutil.copy(source_path, dest_path)
 
 bad_cases = [item for item in train_images if item not in good_cases]
@@ -78,5 +78,5 @@ clean_dir(dest_dir)
 
 for i, case in enumerate(bad_cases):
     source_path = os.path.join(train_path, case)
-    dest_path = os.path.join(dest_dir, f"{i:04}.png")
+    dest_path = os.path.join(dest_dir, f"{i//12:03}_{abs(i + 12)%12:03}.png")
     shutil.copy(source_path, dest_path)

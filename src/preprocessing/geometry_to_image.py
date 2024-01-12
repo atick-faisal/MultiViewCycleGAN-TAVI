@@ -76,6 +76,9 @@ def generate_images(
                 point_data = np.concatenate([result["Value"].to_numpy(), np.zeros((stent.n_points))])
                 aorta = stent + aorta
 
+            elif transformation == "Raw":
+                aorta = stent + aorta
+
             try:
                 aorta.point_data[transformation] = point_data
             except Exception as e:
