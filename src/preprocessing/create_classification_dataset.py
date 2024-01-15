@@ -5,7 +5,7 @@ from utils import clean_dir
 current_file = os.path.abspath(__file__)
 current_dir = os.path.dirname(current_file)
 
-n = 6
+n = 0
 
 DATA_DIR = "/mnt/Andromeda/Datasets/TAVI/"
 CLASS_DIR = f"Classification{n}"
@@ -14,7 +14,7 @@ TRAIN_DIR = "Train"
 TEST_DIR = "Test"
 GOOD_DIR = "Good"
 BAD_DIR = "BAD"
-TARGET_DIR = "Stress"
+TARGET_DIR = "Pressure"
 
 GOOD_CASES = [
     "PATIENT-1_26",
