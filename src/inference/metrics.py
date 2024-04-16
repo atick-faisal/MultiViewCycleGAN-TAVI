@@ -15,6 +15,7 @@ from sklearn.metrics import (
 )
 
 INTENSITY_THRESHOLD = 40
+LOGS_FILE_PATH = "Logs/vms_metrics.txt"
 
 
 def calculate_evaluation_metrics(
@@ -64,6 +65,13 @@ def calculate_evaluation_metrics(
     jaccard = jaccard_score(mask_ground_truth_flat, mask_predicted_flat)
     mse = mean_squared_error(ground_truth * background, predicted * background) \
         / np.max(ground_truth)
+    
+    filename = ground_truth_path.rsplit("/")[-1]  
+    write_metrics_to_file(
+        LOGS_FILE_PATH,
+        f"{filename} \t Precision: {precision}, Recall: {recall}, F2: {f2}, \
+            MCC: {mcc}, Jaccard: {jaccard}, MSE: {mse}, IOU: {iou_score}, SSIM: {ssim}\n"
+    )
 
     return precision, recall, f2, mcc, jaccard, mse, iou_score, ssim
 
@@ -123,9 +131,20 @@ def calculate_metrics(image_folder):
         avg_recall, avg_f2, avg_mcc, avg_jaccard
 
 
+def write_metrics_to_file(file_path: str, metrics: str):
+    """
+    Append evaluation metrics to a file.
+    Args:
+        file_path (str): Path to the file.
+        metrics (str): Evaluation metrics.
+    """
+    with open(file_path, "a") as file:
+        file.write(metrics)
+
+
 def main():
     image_folder = \
-        "/mnt/Andromeda/pytorch-CycleGAN-and-pix2pix/results/cp007/test_300/images/"
+        "/mnt/Andromeda/pytorch-CycleGAN-and-pix2pix/results/vms005/test_150/images/"
     avg_mse, avg_iou, avg_ssim, avg_precision, avg_recall, \
         avg_f2, avg_mcc, avg_jaccard = calculate_metrics(image_folder)
 

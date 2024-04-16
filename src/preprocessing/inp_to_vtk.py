@@ -6,7 +6,8 @@ from utils import get_file_with_extension
 current_file = os.path.abspath(__file__)
 current_dir = os.path.dirname(current_file)
 
-DATA_DIR = os.path.join(current_dir, "../../data/dataset")
+# DATA_DIR = os.path.join(current_dir, "../../data/dataset")
+DATA_DIR = "/mnt/Data/Datasets/TAVI/"
 PATIENTS_DIR = "Patients"
 
 

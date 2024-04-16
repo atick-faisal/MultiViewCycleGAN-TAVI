@@ -13,9 +13,9 @@ current_file = os.path.abspath(__file__)
 current_dir = os.path.dirname(current_file)
 
 # DATA_DIR = os.path.join(current_dir, "../../data/dataset")
-DATA_DIR = "/mnt/Andromeda/Datasets/TAVI/"
+DATA_DIR = "/mnt/Data/Datasets/TAVI/"
 PATIENTS_DIR = "Patients"
-IMAGES_DIR = "Images"
+IMAGES_DIR = "Images-new"
 TRAIN_DIR = "Train"
 TEST_DIR = "Test"
 
@@ -51,7 +51,7 @@ def generate_images(
             input_file = get_file_with_extension(files_path, ".inp")
             pressure_file = get_file_with_extension(files_path, "CONTACT.csv")
             stress_file = get_file_with_extension(files_path, "SPOS.csv")
-            aorta_file = get_file_with_extension(files_path, "AORTA.inp.vtk")
+            aorta_file = get_file_with_extension(files_path, "AORTA.inp.stl")
             stent_file = get_file_with_extension(files_path, "STENT.obj")
 
             aorta = pv.read(aorta_file)
@@ -121,8 +121,8 @@ if __name__ == "__main__":
         for _ in tqdm(range(len(train_patients))):
             next(train_generator)
 
-        #     break
-        # break
+            break
+        break
 
         test_generator = generate_images(test_patients, transformation, "test")
         for _ in tqdm(range(len(test_patients))):
