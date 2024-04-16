@@ -76,7 +76,7 @@ def get_pressure_result(inp_file_path: str, pressure_path: str) -> pd.DataFrame:
     clean_result = _get_clean_result(result, "CPRESS     General_Contact_Domain")
 
     # Merge the point cloud data with the result data based on the 'Node' column
-    merged_data = points.merge(clean_result, on="Node", how="outer").fillna(0)
+    merged_data = points.merge(clean_result, on="Node", how="inner").fillna(0)
 
     return merged_data
 
@@ -102,6 +102,6 @@ def get_stress_result(inp_file_path: str, stress_path: str) -> pd.DataFrame:
     clean_result = _get_clean_result(result, "S-Mises")
 
     # Merge the point cloud data with the result data based on the 'Node' column
-    merged_data = points.merge(clean_result, on="Node", how="outer").fillna(0)
+    merged_data = points.merge(clean_result, on="Node", how="inner").fillna(0)
 
     return merged_data

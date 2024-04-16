@@ -24,7 +24,7 @@ CURVATURE_DIR = "Curvature"
 PRESSURE_DIR = "Pressure"
 STRESS_DIR = "Stress"
 TRAIN_PERCENTAGE = 0.8
-GEOMETRY_TRANSFORMATIONS = ["Stress"]
+GEOMETRY_TRANSFORMATIONS = ["Curvature"]
 PRESSURE_LIM = [0.0, 0.4]
 STRESS_LIM = [0.0, 0.5]
 CURVATURE_LIM = [0.0, 0.05]
@@ -68,6 +68,8 @@ def generate_images(
             elif transformation == "Pressure":
                 result = get_pressure_result(input_file, pressure_file)
                 point_data = np.concatenate([result["Value"].to_numpy(), np.zeros((stent.n_points))])
+                # point_data = result["Value"].to_numpy()
+
                 aorta = stent + aorta
                 # point_data = result["Pressure"].to_numpy()
 
@@ -121,8 +123,8 @@ if __name__ == "__main__":
         for _ in tqdm(range(len(train_patients))):
             next(train_generator)
 
-            break
-        break
+        #     break
+        # break
 
         test_generator = generate_images(test_patients, transformation, "test")
         for _ in tqdm(range(len(test_patients))):
