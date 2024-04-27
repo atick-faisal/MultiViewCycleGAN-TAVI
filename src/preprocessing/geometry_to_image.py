@@ -24,7 +24,7 @@ CURVATURE_DIR = "Curvature"
 PRESSURE_DIR = "Pressure"
 STRESS_DIR = "Stress"
 TRAIN_PERCENTAGE = 0.8
-GEOMETRY_TRANSFORMATIONS = ["Curvature"]
+GEOMETRY_TRANSFORMATIONS = ["Raw"]
 PRESSURE_LIM = [0.0, 0.4]
 STRESS_LIM = [0.0, 0.5]
 CURVATURE_LIM = [0.0, 0.05]
@@ -48,41 +48,45 @@ def generate_images(
         sizes = os.listdir(patient_path)
         for size in sizes:
             files_path = os.path.join(patient_path, size)
-            input_file = get_file_with_extension(files_path, ".inp")
+            input_file = get_file_with_extension(files_path, "AORTA.inp")
             pressure_file = get_file_with_extension(files_path, "CONTACT.csv")
             stress_file = get_file_with_extension(files_path, "SPOS.csv")
-            aorta_file = get_file_with_extension(files_path, "AORTA.inp.stl")
+            aorta_file = get_file_with_extension(files_path, "AORTA.inp.vtk")
             stent_file = get_file_with_extension(files_path, "STENT.obj")
 
             aorta = pv.read(aorta_file)
             stent = pv.read(stent_file)
+            combined = stent + aorta
 
             point_data = None
 
             if transformation == "Curvature":
                 point_data = np.concatenate([aorta.curvature(curv_type="gaussian"), np.zeros((stent.n_points))])
-                aorta = stent + aorta
+                # combined = stent + aorta
 
                 # point_data = aorta.curvature(curv_type="gaussian")
 
             elif transformation == "Pressure":
                 result = get_pressure_result(input_file, pressure_file)
-                point_data = np.concatenate([result["Value"].to_numpy(), np.zeros((stent.n_points))])
+                # point_data = np.concatenate([result["Value"].to_numpy(), np.zeros((stent.n_points))])
+                point_data = np.pad(result["Value"].to_numpy(), (0, combined.n_points - aorta.n_points), "constant")
                 # point_data = result["Value"].to_numpy()
 
-                aorta = stent + aorta
+                # combined = stent + aorta
                 # point_data = result["Pressure"].to_numpy()
 
             elif transformation == "Stress":
                 result = get_stress_result(input_file, stress_file)
-                point_data = np.concatenate([result["Value"].to_numpy(), np.zeros((stent.n_points))])
-                aorta = stent + aorta
+                # point_data = np.concatenate([result["Value"].to_numpy(), np.zeros((stent.n_points))])
+                point_data = np.pad(result["Value"].to_numpy(), (0, combined.n_points - aorta.n_points), "constant")
+                # combined = stent + aorta
 
             elif transformation == "Raw":
-                aorta = stent + aorta
+                point_data = np.concatenate([np.zeros((aorta.n_points)), np.ones((stent.n_points))])
+                # combined = stent + aorta
 
             try:
-                aorta.point_data[transformation] = point_data
+                combined.point_data[transformation] = point_data
             except Exception as e:
                 print(e)
                 print(aorta_file)
@@ -105,7 +109,7 @@ def generate_images(
                 clim = STRESS_LIM
             else:
                 clim = CURVATURE_LIM
-            generate_rotating_snapshots(aorta, save_path, clim)
+            generate_rotating_snapshots(combined, save_path, clim)
 
         yield
 

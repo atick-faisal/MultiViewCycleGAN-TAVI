@@ -4,12 +4,12 @@ from tqdm import tqdm
 
 from utils import *
 
-DATA_DIR = "/mnt/Andromeda/Datasets/TAVI/"
-IMAGES_DIR = "Images"
-PAIRED_DIR = "Paired-Images-Stress"
+DATA_DIR = "/mnt/Data/Datasets/TAVI/"
+IMAGES_DIR = "Images-new"
+PAIRED_DIR = "Paired-Images-Pressure"
 TRAIN_DIR = "Train"
 TEST_DIR = "Test"
-INPUT_DIR = "Curvature"
+INPUT_DIR = "Raw"
 PRESSURE_DIR = "Pressure"
 STRESS_DIR = "Stress"
 

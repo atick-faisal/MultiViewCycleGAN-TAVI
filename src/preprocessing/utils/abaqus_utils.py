@@ -47,9 +47,7 @@ def _get_clean_result(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
     """
     # Convert the 'Node Label' and 'CPRESS     General_Contact_Domain' columns to numeric
     df["Node"] = pd.to_numeric(df["Node Label"], errors="coerce")
-    df["Value"] = pd.to_numeric(
-        df[column_name], errors="coerce"
-    )
+    df["Value"] = pd.to_numeric(df[column_name], errors="coerce")
 
     # Select only the 'Node' and 'Pressure' columns
     return df[["Node", "Value"]]
@@ -66,17 +64,21 @@ def get_pressure_result(inp_file_path: str, pressure_path: str) -> pd.DataFrame:
     Returns:
         pd.DataFrame: A DataFrame containing the merged data with columns ['Node', 'X', 'Y', 'Z', 'Pressure'].
     """
-    # Extract the point cloud data from the input file
-    points = _get_point_cloud_from_inp_file(inp_file_path)
+    try:
+        # Extract the point cloud data from the input file
+        points = _get_point_cloud_from_inp_file(inp_file_path)
 
-    # Read the result data from the result file
-    result = pd.read_csv(pressure_path, skipinitialspace=True)
+        # Read the result data from the result file
+        result = pd.read_csv(pressure_path, skipinitialspace=True)
 
-    # Extract the nodes and pressure data from the result DataFrame
-    clean_result = _get_clean_result(result, "CPRESS     General_Contact_Domain")
+        # Extract the nodes and pressure data from the result DataFrame
+        clean_result = _get_clean_result(result, "CPRESS     General_Contact_Domain")
 
-    # Merge the point cloud data with the result data based on the 'Node' column
-    merged_data = points.merge(clean_result, on="Node", how="inner").fillna(0)
+        # Merge the point cloud data with the result data based on the 'Node' column
+        merged_data = points.merge(clean_result, on="Node", how="inner").fillna(0)
+    except Exception as e:
+        print(e)
+        print(inp_file_path)
 
     return merged_data
 
@@ -105,3 +107,29 @@ def get_stress_result(inp_file_path: str, stress_path: str) -> pd.DataFrame:
     merged_data = points.merge(clean_result, on="Node", how="inner").fillna(0)
 
     return merged_data
+
+
+def extract_part(data, part_name):
+    """
+    Extracts a part from a string containing Abaqus input file data.
+
+    Args:
+        data: The string containing the Abaqus input file data.
+        part_name: The name of the part to extract.
+
+    Returns:
+        A string containing the extracted part data.
+    """
+    start_line = f"*Part, name={part_name}"
+    end_line = "*End Part"
+    in_part = False
+    part_data = []
+    for line in data.splitlines():
+        if line.startswith(start_line):
+            in_part = True
+        elif line == end_line and in_part:
+            in_part = False
+            break
+        if in_part:
+            part_data.append(line)
+    return "\n".join(part_data)

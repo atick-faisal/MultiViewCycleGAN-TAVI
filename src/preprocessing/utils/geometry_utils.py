@@ -30,9 +30,6 @@ def generate_rotating_snapshots(
     - None
 
     """
-    pl = pv.Plotter(off_screen=True)
-    pl.enable_anti_aliasing()
-    pl.set_background("white")
 
     # Required for correcting the geometry orientation
     geometry.rotate_x(90, inplace=True)
@@ -46,21 +43,6 @@ def generate_rotating_snapshots(
     # ... Pressure & Curvature
     # cmap[0, 3] = 0.0
 
-    pl.add_mesh(
-        mesh=geometry,
-        cmap=ListedColormap(cmap),
-        show_scalar_bar=False,
-        clim=clim,
-        ambient=ambient,
-        smooth_shading=True,
-        lighting=True,
-    )
-
-    # This configuration works best to get a good snapshot
-    pl.camera.zoom(2.0)
-    pl.camera.focal_point = (0, 0, 20.0)
-    pl.camera.elevation = -20
-
     # geometry.rotate_z(130, inplace=True)
 
     for i in range(360 // rotation_step):
@@ -72,24 +54,31 @@ def generate_rotating_snapshots(
             geometry.rotate_z(rotation_step, inplace=True)
         else:
             raise ValueError("Rotation axis is not correct")
+        
+        pl = pv.Plotter(off_screen=True)
+        pl.enable_anti_aliasing()
+        pl.set_background("white")
 
-        pl.clear()
         pl.add_mesh(
             mesh=geometry,
             cmap=ListedColormap(cmap),
             show_scalar_bar=False,
             clim=clim,
-            ambient=ambient,
+            # ambient=ambient,
             smooth_shading=True,
             lighting=True,
             opacity=1.0,
             show_edges=True,
+            edge_opacity=0.1,
             # color="white"
         )
+
+        pl.camera.zoom(2.0)
+        pl.camera.focal_point = (0, 0, 20.0)
+        pl.camera.elevation = -20
+
         pl.show(auto_close=False)
         image = Image.fromarray(pl.image[:, 128:-128, :])
         image.save(save_path + "_{:s}_{:03d}.png".format(rotation_axis, i))
-
-    # pl.show()
-    pl.close()
-    pl.deep_clean()
+        pl.close()
+        pl.deep_clean()

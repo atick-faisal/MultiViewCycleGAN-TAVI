@@ -1,5 +1,4 @@
 import os
-import meshio
 import tqdm
 from utils import get_file_with_extension, extract_part
 
@@ -9,27 +8,6 @@ current_dir = os.path.dirname(current_file)
 # DATA_DIR = os.path.join(current_dir, "../../data/dataset")
 DATA_DIR = "/mnt/Data/Datasets/TAVI/"
 PATIENTS_DIR = "Patients"
-
-
-def convert_inp_to_vtk(inp_file_path: str) -> None:
-    """
-    Converts an input file (.inp) to the VTK format.
-
-    Parameters:
-        inp_file_path (str): The path of the input file.
-
-    Returns:
-        None
-
-    Example:
-        convert_inp_to_vtk('input_file.inp')
-    """
-    # Read the input file using meshio
-    mesh = meshio.read(inp_file_path)
-
-    # Write the mesh to VTK format
-    mesh.write(inp_file_path + ".vtk")
-    # mesh.write(inp_file_path + ".stl")
 
 
 def convert_all_inp_files_to_vtk() -> None:
@@ -65,10 +43,22 @@ def convert_all_inp_files_to_vtk() -> None:
             files_path = os.path.join(sizes_path, size)
 
             # Get the path of the input file (.inp) in the current size directory
-            input_file_path = get_file_with_extension(files_path, "AORTA.inp")
+            input_file_path = get_file_with_extension(files_path, "MM.inp")
 
-            # Convert the input file to STL format
-            convert_inp_to_vtk(input_file_path)
+            # Read input fiel
+            with open(input_file_path, "r") as file:
+                input_data = file.read()
+
+            # Get aorta
+            aorta = extract_part(input_data, "AORTA")
+            stent = extract_part(input_data, "STENT")
+
+            # Write Files
+            with open(input_file_path + "AORTA_PRE.inp", "w") as output_file:
+                output_file.write(aorta)
+
+            with open(input_file_path + "STENT_PRE.inp", "w") as output_file:
+                output_file.write(stent)
 
 
 if __name__ == "__main__":
