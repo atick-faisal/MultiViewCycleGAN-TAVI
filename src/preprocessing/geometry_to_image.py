@@ -51,8 +51,8 @@ def generate_images(
             input_file = get_file_with_extension(files_path, "AORTA.inp")
             pressure_file = get_file_with_extension(files_path, "CONTACT.csv")
             stress_file = get_file_with_extension(files_path, "SPOS.csv")
-            aorta_file = get_file_with_extension(files_path, "AORTA.inp.vtk")
-            stent_file = get_file_with_extension(files_path, "STENT.obj")
+            aorta_file = get_file_with_extension(files_path, "AORTA_PRE.inp.vtk")
+            stent_file = get_file_with_extension(files_path, "STENT_PRE.inp.vtk")
 
             aorta = pv.read(aorta_file)
             stent = pv.read(stent_file)
@@ -82,7 +82,7 @@ def generate_images(
                 # combined = stent + aorta
 
             elif transformation == "Raw":
-                point_data = np.concatenate([np.zeros((aorta.n_points)), np.ones((stent.n_points))])
+                point_data = np.concatenate([np.zeros((aorta.n_points)), 0.025 * np.ones((stent.n_points))])
                 # combined = stent + aorta
 
             try:
