@@ -12,7 +12,6 @@ random.seed(1)
 current_file = os.path.abspath(__file__)
 current_dir = os.path.dirname(current_file)
 
-# DATA_DIR = os.path.join(current_dir, "../../data/dataset")
 DATA_DIR = "/mnt/Data/Datasets/TAVI/"
 PATIENTS_DIR = "Patients"
 IMAGES_DIR = "Images-new"
@@ -61,29 +60,30 @@ def generate_images(
             point_data = None
 
             if transformation == "Curvature":
-                point_data = np.concatenate([aorta.curvature(curv_type="gaussian"), np.zeros((stent.n_points))])
-                # combined = stent + aorta
-
-                # point_data = aorta.curvature(curv_type="gaussian")
+                point_data = np.concatenate(
+                    [aorta.curvature(curv_type="gaussian"), np.zeros((stent.n_points))]
+                )
 
             elif transformation == "Pressure":
                 result = get_pressure_result(input_file, pressure_file)
-                # point_data = np.concatenate([result["Value"].to_numpy(), np.zeros((stent.n_points))])
-                point_data = np.pad(result["Value"].to_numpy(), (0, combined.n_points - aorta.n_points), "constant")
-                # point_data = result["Value"].to_numpy()
-
-                # combined = stent + aorta
-                # point_data = result["Pressure"].to_numpy()
+                point_data = np.pad(
+                    result["Value"].to_numpy(),
+                    (0, combined.n_points - aorta.n_points),
+                    "constant",
+                )
 
             elif transformation == "Stress":
                 result = get_stress_result(input_file, stress_file)
-                # point_data = np.concatenate([result["Value"].to_numpy(), np.zeros((stent.n_points))])
-                point_data = np.pad(result["Value"].to_numpy(), (0, combined.n_points - aorta.n_points), "constant")
-                # combined = stent + aorta
+                point_data = np.pad(
+                    result["Value"].to_numpy(),
+                    (0, combined.n_points - aorta.n_points),
+                    "constant",
+                )
 
             elif transformation == "Raw":
-                point_data = np.concatenate([np.zeros((aorta.n_points)), 0.025 * np.ones((stent.n_points))])
-                # combined = stent + aorta
+                point_data = np.concatenate(
+                    [np.zeros((aorta.n_points)), 0.025 * np.ones((stent.n_points))]
+                )
 
             try:
                 combined.point_data[transformation] = point_data

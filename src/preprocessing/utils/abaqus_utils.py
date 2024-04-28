@@ -64,21 +64,17 @@ def get_pressure_result(inp_file_path: str, pressure_path: str) -> pd.DataFrame:
     Returns:
         pd.DataFrame: A DataFrame containing the merged data with columns ['Node', 'X', 'Y', 'Z', 'Pressure'].
     """
-    try:
-        # Extract the point cloud data from the input file
-        points = _get_point_cloud_from_inp_file(inp_file_path)
+    # Extract the point cloud data from the input file
+    points = _get_point_cloud_from_inp_file(inp_file_path)
 
-        # Read the result data from the result file
-        result = pd.read_csv(pressure_path, skipinitialspace=True)
+    # Read the result data from the result file
+    result = pd.read_csv(pressure_path, skipinitialspace=True)
 
-        # Extract the nodes and pressure data from the result DataFrame
-        clean_result = _get_clean_result(result, "CPRESS     General_Contact_Domain")
+    # Extract the nodes and pressure data from the result DataFrame
+    clean_result = _get_clean_result(result, "CPRESS     General_Contact_Domain")
 
-        # Merge the point cloud data with the result data based on the 'Node' column
-        merged_data = points.merge(clean_result, on="Node", how="inner").fillna(0)
-    except Exception as e:
-        print(e)
-        print(inp_file_path)
+    # Merge the point cloud data with the result data based on the 'Node' column
+    merged_data = points.merge(clean_result, on="Node", how="inner").fillna(0)
 
     return merged_data
 
