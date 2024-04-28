@@ -54,7 +54,7 @@ def generate_rotating_snapshots(
             geometry.rotate_z(rotation_step, inplace=True)
         else:
             raise ValueError("Rotation axis is not correct")
-        
+
         pl = pv.Plotter(off_screen=True)
         pl.enable_anti_aliasing()
         pl.set_background("white")
@@ -64,13 +64,12 @@ def generate_rotating_snapshots(
             cmap=ListedColormap(cmap),
             show_scalar_bar=False,
             clim=clim,
-            # ambient=ambient,
+            ambient=ambient,
             smooth_shading=True,
             lighting=True,
             opacity=1.0,
             show_edges=True,
             edge_opacity=0.1,
-            # color="white"
         )
 
         pl.camera.zoom(2.0)

@@ -13,14 +13,11 @@ INPUT_DIR = "Raw"
 PRESSURE_DIR = "Pressure"
 STRESS_DIR = "Stress"
 
-def create_pair(
-        image1: str,
-        image2: str,
-        save_path: str
-): 
+
+def create_pair(image1: str, image2: str, save_path: str):
     image1 = Image.open(image1)
     image2 = Image.open(image2)
-    new_image = Image.new('RGB', (image1.width + image2.width, image1.height))
+    new_image = Image.new("RGB", (image1.width + image2.width, image1.height))
     new_image.paste(image1, (0, 0))
     new_image.paste(image2, (image1.width, 0))
     new_image.save(save_path)
@@ -37,7 +34,7 @@ if __name__ == "__main__":
     train_stress_dir = os.path.join(train_dir, STRESS_DIR)
     train_pairs_dir = os.path.join(paired_images_dir, TRAIN_DIR)
     clean_dir(train_pairs_dir)
-   
+
     curvature_images = os.listdir(train_INPUT_DIR)
 
     for image in tqdm(curvature_images):
@@ -58,7 +55,7 @@ if __name__ == "__main__":
     clean_dir(test_pairs_dir)
 
     curvature_images = os.listdir(test_INPUT_DIR)
-    
+
     for image in tqdm(curvature_images):
         image_path = os.path.join(test_INPUT_DIR, image)
         pressure_image_path = os.path.join(test_pressure_dir, image)

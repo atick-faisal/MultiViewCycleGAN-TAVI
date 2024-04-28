@@ -5,14 +5,13 @@ from utils import get_file_with_extension, extract_part
 current_file = os.path.abspath(__file__)
 current_dir = os.path.dirname(current_file)
 
-# DATA_DIR = os.path.join(current_dir, "../../data/dataset")
 DATA_DIR = "/mnt/Data/Datasets/TAVI/"
 PATIENTS_DIR = "Patients"
 
 
-def convert_all_inp_files_to_vtk() -> None:
+def extract_part_from_inp_files() -> None:
     """
-    Converts all input files (.inp) in the dataset to VTK format.
+    Extract parts like AORTA or STENT from inp files
 
     Parameters:
         None
@@ -21,7 +20,7 @@ def convert_all_inp_files_to_vtk() -> None:
         None
 
     Example:
-        convert_all_inp_files_to_vtk()
+        extract_part_from_inp_files()
     """
     # Get the path to the patients directory
     patients_path = os.path.join(DATA_DIR, PATIENTS_DIR)
@@ -62,4 +61,4 @@ def convert_all_inp_files_to_vtk() -> None:
 
 
 if __name__ == "__main__":
-    convert_all_inp_files_to_vtk()
+    extract_part_from_inp_files()
