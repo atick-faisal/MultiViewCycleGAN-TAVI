@@ -15,7 +15,7 @@ from sklearn.metrics import (
 )
 
 INTENSITY_THRESHOLD = 40
-LOGS_FILE_PATH = "Logs/vms_metrics.txt"
+LOGS_FILE_PATH = "Logs/cpp_metrics_initial.txt"
 
 
 def calculate_evaluation_metrics(
@@ -36,8 +36,10 @@ def calculate_evaluation_metrics(
     ground_truth = cv2.imread(ground_truth_path, cv2.IMREAD_GRAYSCALE)
     predicted = cv2.imread(predicted_path, cv2.IMREAD_GRAYSCALE)
 
-    ground_truth = ground_truth[:, 512:]
-    predicted = predicted[:, 512:]
+    ground_truth = cv2.resize(ground_truth, (512, 512))
+
+    # ground_truth = ground_truth[:, 512:]
+    # predicted = predicted[:, 512:]
 
     _, background = cv2.threshold(
         ground_truth, 254, 1, cv2.THRESH_BINARY_INV)
@@ -97,11 +99,11 @@ def calculate_metrics(image_folder):
 
     for file in tqdm(os.listdir(image_folder)):
 
-        if file.endswith("_real.png"):
-            base_name = file.replace("_real.png", "")
-            real_image_path = os.path.join(image_folder, file)
-            fake_image_path = os.path.join(
-                image_folder, base_name + "_fake.png")
+        if file.endswith("_fake.png"):
+            base_name = file.replace("_fake.png", "")
+            fake_image_path = os.path.join(image_folder, file)
+            real_image_path = os.path.join(
+                image_folder, base_name + ".png_real.png")
 
             if os.path.exists(fake_image_path):
                 precision, recall, f2, mcc, jaccard, \
@@ -144,7 +146,9 @@ def write_metrics_to_file(file_path: str, metrics: str):
 
 def main():
     image_folder = \
-        "/mnt/Andromeda/pytorch-CycleGAN-and-pix2pix/results/vms005/test_150/images/"
+        "/mnt/Data/Datasets/TAVI/results/vms001/test_400/images"
+    
+    print(os.listdir(image_folder))
     avg_mse, avg_iou, avg_ssim, avg_precision, avg_recall, \
         avg_f2, avg_mcc, avg_jaccard = calculate_metrics(image_folder)
 
